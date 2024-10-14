@@ -47,7 +47,7 @@ const DriverSchema: Schema = new Schema<IDriver>({
   vehicle: {
     type: Schema.Types.ObjectId,
     ref: 'Vehicle',
-    required: true
+    
   },
   currentLocation: {
     type: {

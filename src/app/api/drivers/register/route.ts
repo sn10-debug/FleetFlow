@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
       driver: driver._id,
       type: vehicleType,
       licensePlate,
-      capacity,
+      capacity:+capacity,
       model,
       color
     });

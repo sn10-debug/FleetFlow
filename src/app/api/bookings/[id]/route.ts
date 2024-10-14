@@ -56,7 +56,7 @@ async function handler(
   } else if (req.method === 'GET') {
     // Get booking details
     try {
-      const booking = await Booking.findById(id).populate('driver vehicle');
+      const booking = await Booking.findById(id).populate('driver');
       if (!booking) {
         return NextResponse.json({ message: 'Booking not found' }, { status: 404 });
       }

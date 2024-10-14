@@ -25,6 +25,10 @@ export const GET = authenticateDriver(async (
 
   const radiusInMeters = radius * 1000; // Convert radius to meters
 
+  console.log('Searching for available bookings within', radiusInMeters, 'meters');
+  console.log('Longitude:', longitude);
+  console.log('Latitude:', latitude);
+
   try {
     const availableBookings = await Booking.find({
       status: 'pending',

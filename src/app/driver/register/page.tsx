@@ -50,6 +50,7 @@ export default function DriverRegisterPage() {
         router.push('/driver/login');
       }
     } catch (error: any) {
+      console.error(error.response?.data);
       setError(error.response?.data?.message || 'Registration failed.');
     }
   };
@@ -95,7 +96,7 @@ export default function DriverRegisterPage() {
                 required
               />
             </div>
-            {/* Password */}
+        
             <div>
               <label className="block text-gray-700">Password</label>
               <input
@@ -107,7 +108,7 @@ export default function DriverRegisterPage() {
                 required
               />
             </div>
-            {/* Phone Number */}
+           
             <div>
               <label className="block text-gray-700">Phone Number</label>
               <input

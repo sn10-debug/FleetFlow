@@ -103,6 +103,9 @@ const BookingSchema: Schema = new Schema<IBooking>(
   }
 );
 
+
+BookingSchema.index({ 'pickupLocation.coordinates': '2dsphere' });
+
 const Booking = mongoose.models.Booking || mongoose.model<IBooking>('Booking', BookingSchema);
 
 

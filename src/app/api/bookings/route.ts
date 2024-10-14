@@ -4,44 +4,49 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/utils/dbConnect';
 import Booking from '@/models/Booking';
 import { authenticate, AuthenticatedRequest } from '@/middlewares/auth';
-import { getIO } from '@/utils/socket';
+import axios from 'axios'; // Import axios to send HTTP requests
 
-async function handler(req: AuthenticatedRequest) {
+export const POST = authenticate(async (
+  req: AuthenticatedRequest,
+  context: { params: any }
+) => {
   await dbConnect();
 
-  if (req.method === 'POST') {
-    const { pickupLocation, dropoffLocation, estimatedCost, details } = await req.json();
+  const bookingData = await req.json();
 
-    try {
-      const booking = new Booking({
-        user: req.userId,
-        pickupLocation,
-        dropoffLocation,
-        estimatedCost,
-        details
-      });
+  try {
+    const booking = new Booking({
+      ...bookingData,
+      user: req.userId,
+      status: 'pending',
+    });
 
-      await booking.save();
+    await booking.save();
 
-      const io = getIO();
-      io.emit('new-booking', booking);
+    // Notify the Socket.IO server
+    await axios.post(`${process.env.SOCKET_SERVER}/emit`, {
+      event: 'new-booking',
+      data: booking,
+    });
 
-      return NextResponse.json(booking, { status: 201 });
-    } catch (error: any) {
-      return NextResponse.json({ message: 'Server Error', error: error.message }, { status: 500 });
-    }
-  } else if (req.method === 'GET') {
-    // Get bookings for the user
-    try {
-      const bookings = await Booking.find({ user: req.userId }).populate('driver vehicle');
-      return NextResponse.json(bookings, { status: 200 });
-    } catch (error: any) {
-      return NextResponse.json({ message: 'Server Error', error: error.message }, { status: 500 });
-    }
-  } else {
-    return NextResponse.json({ message: `Method ${req.method} Not Allowed` }, { status: 405 });
+    return NextResponse.json(booking, { status: 201 });
+  } catch (error: any) {
+    return NextResponse.json(
+      { message: 'Server Error', error: error.message },
+      { status: 500 }
+    );
   }
-}
+});
 
-export const POST = authenticate(handler);
-export const GET = authenticate(handler);
+export const GET=authenticate(async (
+  req: AuthenticatedRequest,
+  context: { params: any }
+) => {
+  await dbConnect();
+
+  const bookings = await Booking.find({ user: req.userId });
+
+  return NextResponse.json(bookings);
+});
+
+
