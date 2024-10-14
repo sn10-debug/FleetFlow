@@ -11,10 +11,16 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
   const router = useRouter();
 
   useEffect(() => {
-    if (!auth?.user) {
+    if (!auth) return; // Wait for auth to be available
+    if (!auth.loading && !auth.user) {
+      
       router.push('/login');
     }
   }, [auth, router]);
+
+  if (auth?.loading) {
+    return null; // Or a loading spinner/component
+  }
 
   return <>{auth?.user ? children : null}</>;
 }

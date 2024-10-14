@@ -8,6 +8,7 @@ interface AuthContextType {
   user: any;
   driver: any;
   token: string | null;
+  loading: boolean; // Add loading state
   loginUser: (email: string, password: string) => Promise<void>;
   loginDriver: (email: string, password: string) => Promise<void>;
   logout: () => void;
@@ -19,21 +20,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<any>(null);
   const [driver, setDriver] = useState<any>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true); // Initialize loading as true
   const router = useRouter();
 
   useEffect(() => {
-    const savedToken = localStorage.getItem('token');
-    const savedUser = localStorage.getItem('user');
-    const savedDriver = localStorage.getItem('driver');
-    if (savedToken) {
-      setToken(savedToken);
-      if (savedUser) {
-        setUser(JSON.parse(savedUser));
+    const initializeAuth = () => {
+      const savedToken = localStorage.getItem('token');
+      const savedUser = localStorage.getItem('user');
+      const savedDriver = localStorage.getItem('driver');
+      if (savedToken) {
+        setToken(savedToken);
+        if (savedUser) {
+          setUser(JSON.parse(savedUser));
+        }
+        if (savedDriver) {
+          setDriver(JSON.parse(savedDriver));
+        }
       }
-      if (savedDriver) {
-        setDriver(JSON.parse(savedDriver));
-      }
-    }
+      setLoading(false); // Set loading to false after initialization
+    };
+
+    initializeAuth();
   }, []);
 
   const loginUser = async (email: string, password: string) => {
@@ -82,7 +89,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, driver, token, loginUser, loginDriver, logout }}
+      value={{ user, driver, token, loginUser, loginDriver, logout,loading }}
     >
       {children}
     </AuthContext.Provider>

@@ -129,11 +129,16 @@ export default function DriverDashboard() {
 
   const fetchBookings = async () => {
     try {
+      const driverInfo =await axiosInstance.get(`/drivers/profile`);
+
       const response = await axiosInstance.get('/bookings/available', {
         params: {
           longitude,
           latitude,
           radius,
+          vehicleType: driverInfo.data.vehicle.type || 'car',
+        
+         
         },
       });
       setBookings(response.data);
@@ -143,7 +148,7 @@ export default function DriverDashboard() {
   };
 
   return (
-   
+ 
     <div className="max-w-3xl mx-auto mt-8">
       <h1 className="text-2xl font-bold text-indigo-600 mb-6">
         Driver Dashboard
@@ -215,6 +220,7 @@ export default function DriverDashboard() {
         </ul>
       )}
     </div>
+
 
 );
 }

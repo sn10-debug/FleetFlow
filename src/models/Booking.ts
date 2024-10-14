@@ -20,6 +20,8 @@ export interface IBooking extends Document {
   details?: string;
   createdAt: Date;
   updatedAt: Date;
+  vehicleType: string;
+  bookingDate: Date;
 }
 
 const BookingSchema: Schema = new Schema<IBooking>(
@@ -29,10 +31,19 @@ const BookingSchema: Schema = new Schema<IBooking>(
       ref: 'User',
       required: true
     },
+    vehicleType: {
+      required: true,
+      type: String,
+     enum: ['car', 'van', 'truck'],
+    },
     driver: {
       type: Schema.Types.ObjectId,
       ref: 'Driver'
       // Initially null; assigned when a driver accepts the booking
+    },
+    bookingDate: {
+      type: Date,
+      required: true
     },
     vehicle: {
       type: Schema.Types.ObjectId,

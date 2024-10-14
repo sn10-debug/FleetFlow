@@ -24,6 +24,12 @@ export default function NewBookingPage() {
   const [estimatedCost, setEstimatedCost] = useState<number | null>(null);
   const [details, setDetails] = useState('');
   const [error, setError] = useState('');
+  const [bookingDate, setBookingDate] = useState<string>(() => {
+    const today = new Date();
+    const timezoneOffset = today.getTimezoneOffset() * 60000; // Offset in milliseconds
+    const localISOTime = new Date(today.getTime() - timezoneOffset).toISOString().split('T')[0];
+    return localISOTime;
+  });
   const router = useRouter();
 
   const handlePickupChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,7 +75,12 @@ export default function NewBookingPage() {
       const pickupFullAddress = `${pickupAddress.city}, ${pickupAddress.state}, ${pickupAddress.pincode}`;
       const dropoffFullAddress = `${dropoffAddress.city}, ${dropoffAddress.state}, ${dropoffAddress.pincode}`;
 
-      console.log(pickupFullAddress, dropoffFullAddress);
+  
+      const today = new Date().toISOString().split('T')[0];
+    if (bookingDate < today) {
+      setError('Booking date cannot be in the past.');
+      return;
+    }
 
       // Geocode addresses to get coordinates
       const pickupCoordinates = await geocodeAddress(pickupFullAddress);
@@ -88,6 +99,8 @@ export default function NewBookingPage() {
         },
         estimatedCost,
         details,
+        vehicleType: vehicleType,
+        bookingDate,
       };
 
       await axiosInstance.post('/bookings', bookingData);
@@ -236,12 +249,26 @@ const response=await fetch(url)
               value={vehicleType}
               onChange={(e) => setVehicleType(e.target.value)}
             >
-              <option value="motorbike">Motorbike</option>
               <option value="car">Car</option>
               <option value="van">Van</option>
               <option value="truck">Truck</option>
             </select>
           </div>
+
+          {/* Booking Date */}
+        <h2 className="text-xl font-semibold text-gray-700 mb-4 mt-6">Booking Date</h2>
+        <div className="mb-4">
+          <label className="block text-gray-700">Select a Date</label>
+          <input
+                type="date"
+                name="bookingDate"
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                value={bookingDate}
+                onChange={(e) => setBookingDate(e.target.value)}
+                min={new Date().toISOString().split('T')[0]}
+                required
+              />
+        </div>
 
           {/* Details */}
           <div className="mb-4">

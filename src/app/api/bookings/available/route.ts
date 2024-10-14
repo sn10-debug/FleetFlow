@@ -15,6 +15,7 @@ export const GET = authenticateDriver(async (
   const longitude = parseFloat(searchParams.get('longitude') || '');
   const latitude = parseFloat(searchParams.get('latitude') || '');
   const radius = parseFloat(searchParams.get('radius') || '');
+  const vehicleType = searchParams.get('vehicleType');
 
   if (!longitude || !latitude || !radius) {
     return NextResponse.json(
@@ -41,6 +42,7 @@ export const GET = authenticateDriver(async (
           ],
         },
       },
+      vehicleType,
     }).exec();
 
     return NextResponse.json(availableBookings, { status: 200 });

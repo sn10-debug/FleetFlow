@@ -21,7 +21,7 @@ const VehicleSchema: Schema = new Schema<IVehicle>({
   type: {
     type: String,
     required: true,
-    enum: ['motorbike', 'car', 'van', 'truck', 'other']
+    enum: ['car', 'van', 'truck']
   },
   licensePlate: {
     type: String,

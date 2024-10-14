@@ -16,6 +16,7 @@ export default function BookingsPage() {
   if (!bookings) return <div>Loading...</div>;
 
   return (
+    <ProtectedRoute>
       <div className="max-w-3xl mx-auto mt-8">
         <h1 className="text-2xl font-bold text-indigo-600 mb-6">My Bookings</h1>
         {bookings.length === 0 ? (
@@ -45,5 +46,7 @@ export default function BookingsPage() {
           </ul>
         )}
       </div>
+      
+    </ProtectedRoute>
   );
 }

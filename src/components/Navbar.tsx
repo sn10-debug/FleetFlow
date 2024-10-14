@@ -12,7 +12,7 @@ export default function Navbar() {
       <div className="container mx-auto flex justify-between items-center">
         <div>
           <Link href="/" className="text-2xl font-bold">
-            <span className="hover:text-indigo-200">Logistics Platform</span>
+            <span className="hover:text-indigo-200">FleetFlow</span>
           </Link>
         </div>
         <div className="space-x-4 flex items-center">
@@ -23,6 +23,15 @@ export default function Navbar() {
               </Link>
             </>
           )}
+
+{auth && auth.user && (
+            <>
+              <Link href="/bookings/new" className="hover:text-indigo-200">
+                New Booking
+              </Link>
+            </>
+          )}
+
           {auth && auth.driver && (
             <>
               <Link href="/driver/dashboard" className="hover:text-indigo-200">
