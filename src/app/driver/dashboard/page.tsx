@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // app/driver/dashboard/page.tsx
 
 'use client';
 
 import { useState, useEffect } from 'react';
 import axiosInstance from '@/utils/axiosInstance';
-import ProtectedRoute from '@/components/ProtectedRoute';
 import { io, Socket } from 'socket.io-client';
 
 let socket: Socket;
@@ -17,7 +18,7 @@ export default function DriverDashboard() {
   const [radius, setRadius] = useState<number>(1000); // Default radius in km
   const [status, setStatus] = useState<string>('available');
   const [driverId, setDriverId] = useState<string>('');
-  let socket_server_url="http://localhost:4000";
+  const socket_server_url="http://localhost:4000";
 
 
   // Get the driver's id from the local storage
@@ -65,7 +66,7 @@ export default function DriverDashboard() {
 
 
     socket.emit('driver-info', {
-      driverId: driverInfo._id ,// Replace with actual driver ID
+      driverId: driverInfo.data._id ,// Replace with actual driver ID
       location: {
         type: 'Point',
         coordinates: driverInfo.data.currentLocation.coordinates,
@@ -123,6 +124,7 @@ export default function DriverDashboard() {
         prevBookings.filter((booking) => booking._id !== bookingId)
       );
     } catch (error: any) {
+      console.log(error);
       setError(error.response?.data?.message || 'Failed to accept booking');
     }
   };

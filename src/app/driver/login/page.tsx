@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState, useContext } from 'react';
@@ -17,11 +18,11 @@ export default function DriverLoginPage() {
 
     if (auth) {
       try {
-        const response = await auth.loginDriver(email, password);
-        if (response) {
-          router.push('/driver/dashboard');
+        await auth.loginDriver(email, password);
+        router.push('/driver/dashboard');
+          
         }
-      } catch (err: any) {
+       catch (err: any) {
         setError(err.message || 'Login failed.');
       }
     }
@@ -72,7 +73,7 @@ export default function DriverLoginPage() {
           </button>
         </form>
         <p className="text-center text-gray-600 mt-4">
-          Don't have an account?{' '}
+         {"Don't have an account? "}
           <a href="/driver/register" className="text-indigo-600 hover:underline">
             Register here
           </a>

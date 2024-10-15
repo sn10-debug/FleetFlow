@@ -5,7 +5,8 @@
 import { useState } from 'react';
 import axiosInstance from '@/utils/axiosInstance';
 import { useRouter } from 'next/navigation';
-import ProtectedRoute from '@/components/ProtectedRoute';
+import PaymentForm from '@/components/PaymentForm';
+
 
 export default function NewBookingPage() {
   const [pickupAddress, setPickupAddress] = useState({
@@ -30,6 +31,10 @@ export default function NewBookingPage() {
     const localISOTime = new Date(today.getTime() - timezoneOffset).toISOString().split('T')[0];
     return localISOTime;
   });
+  const [cargoType, setCargoType] = useState('fragile');
+  const [bookingId, setBookingId] = useState<string | null>(null);
+  const [payNow, setPayNow] = useState<boolean>(true);
+
   const router = useRouter();
 
   const handlePickupChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,10 +106,19 @@ export default function NewBookingPage() {
         details,
         vehicleType: vehicleType,
         bookingDate,
+        cargoType
       };
 
-      await axiosInstance.post('/bookings', bookingData);
-      router.push('/bookings');
+      const response=await axiosInstance.post('/bookings', bookingData);
+      const newBooking = response.data;
+      setBookingId(newBooking._id);
+      if (payNow) {
+        // Proceed to payment step
+      } else {
+        // Redirect or inform the user that booking is created
+        router.push('/bookings');
+      }
+     
     } catch (error: any) {
       setError(error.response?.data?.message || 'Failed to create booking');
     }
@@ -254,6 +268,19 @@ const response=await fetch(url)
               <option value="truck">Truck</option>
             </select>
           </div>
+          <div className="mb-4">
+            <label className="block text-gray-700">Vehicle Type</label>
+            <select
+              name="vehicleType"
+              className="w-full px-3 py-2 text-black border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              value={cargoType}
+              onChange={(e) => setCargoType(e.target.value)}
+            >
+              <option value="fragile">Fragile</option>
+              <option value="non-fragile">Non-Fragile</option>
+        
+            </select>
+          </div>
 
           {/* Booking Date */}
         <h2 className="text-xl font-semibold text-gray-700 mb-4 mt-6">Booking Date</h2>
@@ -287,6 +314,41 @@ const response=await fetch(url)
               Estimated Cost: ${estimatedCost.toFixed(2)}
             </p>
           )}
+       {estimatedCost &&   <div>
+
+{/* Payment Option */}
+<h2 className="text-xl font-semibold text-gray-700 mb-4 mt-6">Payment Option</h2>
+<div className="mb-4">
+<label className="block text-gray-700 mb-2">Choose when to pay:</label>
+<div className="flex items-center mb-2">
+  <input
+    type="radio"
+    id="payNow"
+    name="paymentOption"
+    value="now"
+    checked={payNow}
+    onChange={() => setPayNow(true)}
+    className="mr-2"
+  />
+  <label htmlFor="payNow">Pay Now</label>
+</div>
+<div className="flex items-center">
+  <input
+    type="radio"
+    id="payLater"
+    name="paymentOption"
+    value="later"
+    checked={!payNow}
+    onChange={() => setPayNow(false)}
+    className="mr-2"
+  />
+  <label htmlFor="payLater">Pay Later</label>
+</div>
+</div>
+
+
+</div>} 
+
 
           {/* Buttons */}
           <div className="flex justify-between">
@@ -309,6 +371,12 @@ const response=await fetch(url)
             </button>
           </div>
         </form>
+        
+        {bookingId && estimatedCost !== null && payNow && (
+          <PaymentForm bookingId={bookingId} amount={estimatedCost} />
+        )}
+     
+
       </div>
 
   );

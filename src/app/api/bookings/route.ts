@@ -19,6 +19,7 @@ export const POST = authenticate(async (
       ...bookingData,
       user: req.userId,
       status: 'pending',
+      paymentStatus: 'pending',
     });
 
     await booking.save();

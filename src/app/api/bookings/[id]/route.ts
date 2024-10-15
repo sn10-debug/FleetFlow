@@ -62,6 +62,7 @@ async function handler(
       }
       return NextResponse.json(booking, { status: 200 });
     } catch (error: any) {
+      console.log(error);
       return NextResponse.json(
         { message: 'Server Error', error: error.message },
         { status: 500 }
