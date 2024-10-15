@@ -79,6 +79,7 @@ export default function PaymentForm({ bookingId, amount }: PaymentFormProps) {
 
   return (
     <form onSubmit={handlePayment} className="mt-6">
+ 
       <label className="block text-gray-700 mb-2">Card Details</label>
       <div className="border px-3 py-2 rounded-lg mb-4">
         <CardElement

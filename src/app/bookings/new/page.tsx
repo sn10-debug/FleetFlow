@@ -6,6 +6,8 @@ import { useState } from 'react';
 import axiosInstance from '@/utils/axiosInstance';
 import { useRouter } from 'next/navigation';
 import PaymentForm from '@/components/PaymentForm';
+import { set } from 'mongoose';
+
 
 
 export default function NewBookingPage() {
@@ -23,6 +25,8 @@ export default function NewBookingPage() {
   });
   const [vehicleType, setVehicleType] = useState('car');
   const [estimatedCost, setEstimatedCost] = useState<number | null>(null);
+  const [estimatedDistance, setEstimatedDistance] = useState<number | null>(null);
+  const [estimatedTime, setEstimatedTime] = useState<number | null>(null);
   const [details, setDetails] = useState('');
   const [error, setError] = useState('');
   const [bookingDate, setBookingDate] = useState<string>(() => {
@@ -46,6 +50,10 @@ export default function NewBookingPage() {
   };
 
   const handleEstimate = async () => {
+
+    setEstimatedCost(null);
+    setEstimatedDistance(null);
+    setEstimatedTime(null);
     try {
       // Combine address components into full address strings
       const pickupFullAddress = `${pickupAddress.city}, ${pickupAddress.state}, ${pickupAddress.pincode}`;
@@ -55,7 +63,7 @@ export default function NewBookingPage() {
       const pickupCoordinates = await geocodeAddress(pickupFullAddress);
       const dropoffCoordinates = await geocodeAddress(dropoffFullAddress);
 
-      console.log(pickupCoordinates, dropoffCoordinates);
+    
 
       const response = await axiosInstance.get('/bookings/estimate', {
         params: {
@@ -64,17 +72,28 @@ export default function NewBookingPage() {
           dropoffLongitude: dropoffCoordinates.lon,
           dropoffLatitude: dropoffCoordinates.lat,
           vehicleType,
+          pickupCity: pickupAddress.city,
         },
       });
       setEstimatedCost(response.data.estimatedCost);
+      setEstimatedDistance(response.data.distanceInKm);
+      setEstimatedTime(response.data.timeEstimation);
     } catch (error: any) {
-      setError(error.response?.data?.message || 'Failed to get estimate');
+      setError(error.response?.data?.error || 'Failed to get estimate');
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log('submitting');
+
+    if(bookingId){
+      alert("Booking is Already Created")
+    }
+
+    if(payNow){
+      alert("Please Pay First")
+    }
     try {
       // Combine address components into full address strings
       const pickupFullAddress = `${pickupAddress.city}, ${pickupAddress.state}, ${pickupAddress.pincode}`;
@@ -106,7 +125,9 @@ export default function NewBookingPage() {
         details,
         vehicleType: vehicleType,
         bookingDate,
-        cargoType
+        cargoType,
+        estimatedTime,
+        estimatedDistance
       };
 
       const response=await axiosInstance.post('/bookings', bookingData);
@@ -149,6 +170,7 @@ const response=await fetch(url)
   return (
  
       <div className="max-w-lg mx-auto mt-8 bg-white shadow-md rounded-lg p-6">
+    
         <h1 className="text-2xl font-bold text-center text-indigo-600 mb-6">
           Create a Booking
         </h1>
@@ -263,6 +285,7 @@ const response=await fetch(url)
               value={vehicleType}
               onChange={(e) => setVehicleType(e.target.value)}
             >
+              <option value="bike">Bike</option>
               <option value="car">Car</option>
               <option value="van">Van</option>
               <option value="truck">Truck</option>
@@ -314,6 +337,20 @@ const response=await fetch(url)
               Estimated Cost: ${estimatedCost.toFixed(2)}
             </p>
           )}
+            
+            {/* Estimated Distance */}
+          {estimatedDistance !== null && (
+            <p className="mb-4 text-green-600 font-semibold">
+              Estimated Distance: {estimatedDistance.toFixed(2)} km
+            </p>
+          )}
+
+          {/* Estimated Time */}
+          {estimatedTime !== null && (
+            <p className="mb-4 text-green-600 font-semibold">
+              Estimated Time: {estimatedTime.toFixed(2)} hours
+            </p>
+          )}
        {estimatedCost &&   <div>
 
 {/* Payment Option */}
@@ -348,6 +385,9 @@ const response=await fetch(url)
 
 
 </div>} 
+        {bookingId && estimatedCost !== null && payNow && (
+          <PaymentForm bookingId={bookingId} amount={estimatedCost} />
+        )}
 
 
           {/* Buttons */}
@@ -372,9 +412,7 @@ const response=await fetch(url)
           </div>
         </form>
         
-        {bookingId && estimatedCost !== null && payNow && (
-          <PaymentForm bookingId={bookingId} amount={estimatedCost} />
-        )}
+       
      
 
       </div>

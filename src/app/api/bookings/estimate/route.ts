@@ -5,6 +5,30 @@ import { getDistance } from 'geolib';
 import dbConnect from '@/utils/dbConnect';
 import { authenticate, AuthenticatedRequest } from '@/middlewares/auth';
 
+
+
+const API_KEY = process.env.OPENWEATHER;
+const getWeather = async (city: string) => {
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`; // Metric for Celsius
+
+  try {
+      const response = await fetch(url);
+      if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      // Display relevant weather info
+      console.log(`Weather in ${data.name}:`);
+      console.log(`Temperature: ${data.main.temp}°C`);
+      console.log(`Feels like: ${data.main.feels_like}°C`);
+      console.log(`Humidity: ${data.main.humidity}%`);
+      console.log(`Weather: ${data.weather[0].description}`);
+  } catch (error) {
+      console.error('Error fetching weather data:', error);
+  }
+};
 async function handler(req: AuthenticatedRequest) {
   await dbConnect();
 
@@ -36,7 +60,7 @@ async function handler(req: AuthenticatedRequest) {
       // Adjust cost per km based on vehicle type
       let vehicleMultiplier = 1;
       switch (vehicleType) {
-        case 'motorbike':
+        case 'bike':
           vehicleMultiplier = 0.8;
           break;
         case 'car':
@@ -57,7 +81,43 @@ async function handler(req: AuthenticatedRequest) {
       const distanceInKm = distanceInMeters / 1000;
       const estimatedCost = baseFare + distanceInKm * costPerKm * vehicleMultiplier;
 
-      return NextResponse.json({ estimatedCost }, { status: 200 });
+      if(distanceInKm >50 && vehicleType==='bike')
+      {
+        throw new Error('Bike cannot travel more than 50km');
+
+      }
+      
+
+
+      // Also get the Time Estimation
+
+
+      let average_speed=20; // in km/h
+
+      if(vehicleType === 'bike'){
+        average_speed = 60;
+      }
+      else if(vehicleType === 'car'){
+        average_speed = 40;
+      }
+      else if(vehicleType === 'van'){
+        average_speed = 35;
+      }
+      else if(vehicleType === 'truck'){
+        average_speed = 25;
+      }
+
+      const timeEstimation = distanceInKm / average_speed;
+
+      // Check for the Weather
+
+      const weather= await getWeather(searchParams.get('pickupCity') || '');
+
+      // console.log(weather);
+
+     
+
+      return NextResponse.json({ estimatedCost,timeEstimation ,distanceInKm}, { status: 200 });
     } catch (error: any) {
       return NextResponse.json({ message: 'Server Error', error: error.message }, { status: 500 });
     }

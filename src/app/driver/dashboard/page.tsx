@@ -7,6 +7,7 @@
 import { useState, useEffect } from 'react';
 import axiosInstance from '@/utils/axiosInstance';
 import { io, Socket } from 'socket.io-client';
+import { set, setDriver } from 'mongoose';
 
 let socket: Socket;
 
@@ -15,13 +16,14 @@ export default function DriverDashboard() {
   const [error, setError] = useState('');
   const [longitude, setLongitude] = useState<number | null>(null);
   const [latitude, setLatitude] = useState<number | null>(null);
-  const [radius, setRadius] = useState<number>(1000); // Default radius in km
+  const [radius, setRadius] = useState<number>(100); // Default radius in km
   const [status, setStatus] = useState<string>('available');
   const [driverId, setDriverId] = useState<string>('');
+  const [driverVehicle,setDriverVehicle]=useState<string>('');
   const socket_server_url="http://localhost:4000";
 
 
-  // Get the driver's id from the local storage
+
 
 
 
@@ -63,6 +65,22 @@ export default function DriverDashboard() {
   const sendDriverInfo =  async () => {
 
     const driverInfo =await axiosInstance.get(`/drivers/profile`);
+
+    setDriverVehicle(driverInfo.data.vehicle.type);
+
+    if (driverInfo.data.vehicle.type === 'bike'){
+      setRadius(7)
+      fetchBookings(7)
+    }else if (driverInfo.data.vehicle.type === 'car'){
+      setRadius(50)
+      fetchBookings(50)
+    }else if (driverInfo.data.vechicle.type === 'van'){
+      setRadius(100)
+      fetchBookings(100)
+    }else {
+      setRadius(200)
+      fetchBookings(200)
+    }
 
 
     socket.emit('driver-info', {
@@ -107,9 +125,16 @@ export default function DriverDashboard() {
 
   const handleStatusChange = async (newStatus: string) => {
     setStatus(newStatus);
-    // Update driver status on the server
+   
     try {
       await axiosInstance.put('/drivers/me', { status: newStatus });
+      if(status=="offline"){
+        setBookings([])
+        socket.disconnect();
+      }else if (status=="available"){
+        await fetchBookings();
+        socketInitializer();
+      }
     } catch (error: any) {
       setError('Failed to update status on server');
     }
@@ -119,7 +144,7 @@ export default function DriverDashboard() {
       await axiosInstance.put(`/bookings/${bookingId}`, {
         status: 'accepted',
       });
-      // Remove accepted booking from the list
+  
       setBookings((prevBookings) =>
         prevBookings.filter((booking) => booking._id !== bookingId)
       );
@@ -129,7 +154,7 @@ export default function DriverDashboard() {
     }
   };
 
-  const fetchBookings = async () => {
+  const fetchBookings = async (radius=7) => {
     try {
       const driverInfo =await axiosInstance.get(`/drivers/profile`);
 

@@ -25,6 +25,8 @@ export interface IBooking extends Document {
   cargoType: string;
   payment?: mongoose.Types.ObjectId;
   paymentStatus: 'pending' | 'paid';
+  estimatedTime: number;
+  estimatedDistance: number;
 }
 
 const BookingSchema: Schema = new Schema<IBooking>(
@@ -35,18 +37,18 @@ const BookingSchema: Schema = new Schema<IBooking>(
       required: true
     },
     
-      // ... existing fields ...
+
       paymentStatus: {
         type: String,
         enum: ['pending', 'paid'],
         default: 'pending',
       },
-      // ... existing fields ...
+
  
     vehicleType: {
       required: true,
       type: String,
-     enum: ['car', 'van', 'truck'],
+     enum: ['bike','car', 'van', 'truck'],
     },
     cargoType: {
       required: true,
@@ -65,6 +67,14 @@ const BookingSchema: Schema = new Schema<IBooking>(
     },
     bookingDate: {
       type: Date,
+      required: true
+    },
+    estimatedDistance: {
+      type: Number,
+      required: true
+    },
+    estimatedTime: {
+      type: Number,
       required: true
     },
     vehicle: {
