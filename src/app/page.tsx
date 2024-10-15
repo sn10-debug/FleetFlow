@@ -27,7 +27,7 @@ export default function Home() {
                 Seamless Logistics for a Connected World
               </h1>
               <p className="text-lg mb-6">
-                FleetFlow revolutionizes the way you connect with drivers and manage your transportation needs. Whether you're booking a ride or managing your fleet, FleetFlow ensures reliability, efficiency, and real-time visibility.
+                FleetFlow revolutionizes the way you connect with drivers and manage your transportation needs. Whether you&apos;re booking a ride or managing your fleet, FleetFlow ensures reliability, efficiency, and real-time visibility.
               </p>
               <div className="flex space-x-4">
                 <Link
@@ -90,7 +90,7 @@ export default function Home() {
                   </div>
                   <h3 className="text-xl font-semibold mb-2">Real-Time Tracking</h3>
                   <p className="text-gray-600">
-                    Monitor your driver's location in real-time, ensuring transparency and peace of mind every step of the way.
+                    Monitor your driver&apos;s location in real-time, ensuring transparency and peace of mind every step of the way.
                   </p>
                 </div>
               </div>
@@ -196,7 +196,7 @@ export default function Home() {
             <div className="w-full md:w-1/2 lg:w-1/3 px-4 mb-8">
               <div className="bg-white p-6 rounded-lg shadow-md">
                 <p className="text-gray-700 mb-4">
-                  "FleetFlow has made booking rides so effortless. The real-time tracking feature gives me complete peace of mind."
+                  &quot;FleetFlow has made booking rides so effortless. The real-time tracking feature gives me complete peace of mind.&quot;
                 </p>
                 <div className="flex items-center">
                   <Image
@@ -217,7 +217,7 @@ export default function Home() {
             <div className="w-full md:w-1/2 lg:w-1/3 px-4 mb-8">
               <div className="bg-white p-6 rounded-lg shadow-md">
                 <p className="text-gray-700 mb-4">
-                  "As a driver, FleetFlow has streamlined my workflow. The platform is reliable and the support team is always responsive."
+                  &quot;As a driver, FleetFlow has streamlined my workflow. The platform is reliable and the support team is always responsive.&quot;
                 </p>
                 <div className="flex items-center">
                   <Image
@@ -238,7 +238,7 @@ export default function Home() {
             <div className="w-full md:w-1/2 lg:w-1/3 px-4 mb-8">
               <div className="bg-white p-6 rounded-lg shadow-md">
                 <p className="text-gray-700 mb-4">
-                  "The payment system in FleetFlow is secure and flexible. I love having the option to pay later for my bookings."
+                  &quot;The payment system in FleetFlow is secure and flexible. I love having the option to pay later for my bookings.&quot;
                 </p>
                 <div className="flex items-center">
                   <Image
@@ -264,7 +264,7 @@ export default function Home() {
           <div className="container mx-auto px-6 py-16 text-center">
             <h2 className="text-3xl font-bold mb-4">Join FleetFlow Today!</h2>
             <p className="text-lg mb-8">
-              Whether you're a user seeking reliable transportation or a driver looking for flexible earning opportunities, FleetFlow is your trusted partner.
+              Whether you&apos;re a user seeking reliable transportation or a driver looking for flexible earning opportunities, FleetFlow is your trusted partner.
             </p>
             <div className="flex justify-center space-x-4 flex-wrap">
               <Link

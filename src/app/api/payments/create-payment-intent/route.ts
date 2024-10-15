@@ -29,7 +29,7 @@ export const POST = authenticate(async (req: AuthenticatedRequest) => {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(booking.estimatedCost * 100), // Amount in cents
       currency: 'usd', // Adjust currency as needed
-      metadata: { bookingId: booking._id.toString(), userId },
+      metadata: { bookingId: booking._id.toString(), userId: (userId && userId.toString()) || '' },
     });
 
     return NextResponse.json(paymentIntent.client_secret, { status: 200 });

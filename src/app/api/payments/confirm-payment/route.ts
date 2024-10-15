@@ -7,7 +7,7 @@ import Payment from '@/models/Payment';
 import Booking from '@/models/Booking';
 import { authenticate, AuthenticatedRequest } from '@/middlewares/auth';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
 export const POST = authenticate(async (req: AuthenticatedRequest) => {
   await dbConnect();
@@ -56,10 +56,7 @@ export const POST = authenticate(async (req: AuthenticatedRequest) => {
       status: 'completed',
       paymentMethod: {
         type: 'card',
-        details: {
-          last4: paymentIntent.charges.data[0].payment_method_details.card.last4,
-          brand: paymentIntent.charges.data[0].payment_method_details.card.brand,
-        },
+        
       },
       transactionId: paymentIntent.id,
     });
