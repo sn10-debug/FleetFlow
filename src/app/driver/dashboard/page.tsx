@@ -19,7 +19,7 @@ export default function DriverDashboard() {
   const [status, setStatus] = useState<string>('available');
   const [driverId, setDriverId] = useState<string>('');
   const [driverVehicle,setDriverVehicle]=useState<string>('');
-  const socket_server_url="http://localhost:4000";
+  const socket_server_url="https://socket-server-ruddy.vercel.app/";
 
 
 
