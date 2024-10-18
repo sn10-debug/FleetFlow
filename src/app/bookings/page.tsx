@@ -33,6 +33,10 @@ export default function BookingsPage() {
                     <p className="text-sm text-gray-500">
                       Status: <span className="capitalize">{booking.status}</span>
                     </p>
+                    <p className="text-sm text-gray-500">
+                      Vehicle Type: <span className="capitalize">{booking.vehicleType}</span>
+
+                    </p>
                   </div>
                   <Link
                     href={`/bookings/${booking._id}`}

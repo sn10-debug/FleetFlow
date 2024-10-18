@@ -17,7 +17,7 @@ async function handler(req: AuthenticatedDriverRequest) {
     try {
       console.log("From Server : ",req.driverId);
       const driver = await Driver.findById(req.driverId).select('-password')
-      // .populate('vehicle');
+      .populate('vehicle');
       if (!driver) {
         return NextResponse.json({ message: 'Driver not found' }, { status: 404 });
       }

@@ -292,9 +292,9 @@ const response=await fetch(url)
             </select>
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700">Vehicle Type</label>
+            <label className="block text-gray-700">Cargo Type</label>
             <select
-              name="vehicleType"
+              name="cargoType"
               className="w-full px-3 py-2 text-black border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
               value={cargoType}
               onChange={(e) => setCargoType(e.target.value)}

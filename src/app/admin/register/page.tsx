@@ -137,7 +137,7 @@ export default function DriverRegisterPage() {
                 onChange={handleChange}
                 required
               >
-                <option value="bike">Motorbike</option>
+                <option value="motorbike">Motorbike</option>
                 <option value="car">Car</option>
                 <option value="van">Van</option>
                 <option value="truck">Truck</option>

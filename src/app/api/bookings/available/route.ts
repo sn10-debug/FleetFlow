@@ -44,7 +44,7 @@ export const GET = authenticateDriver(async (
       },
       vehicleType,
     }).exec();
-
+   
     return NextResponse.json(availableBookings, { status: 200 });
   } catch (error: any) {
     return NextResponse.json(

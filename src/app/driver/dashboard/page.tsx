@@ -173,9 +173,15 @@ export default function DriverDashboard() {
     }
   };
 
+
+  const handleRadiusChange = async (newRadius: number) => {
+    setRadius(newRadius);
+    await fetchBookings(newRadius);
+  };
+
   return (
  
-    <div className="max-w-3xl mx-auto mt-8">
+    <div className="max-w-3xl mx-auto mt-8 ">
       <h1 className="text-2xl font-bold text-indigo-600 mb-6">
         Driver Dashboard
       </h1>
@@ -201,8 +207,8 @@ export default function DriverDashboard() {
         <input
           type="number"
           value={radius}
-          onChange={(e) => setRadius(parseFloat(e.target.value))}
-          className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 mt-2"
+          onChange={(e) => handleRadiusChange(parseFloat(e.target.value))}
+          className="w-full text-black px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 mt-2"
           min={1}
         />
       </div>
@@ -211,7 +217,7 @@ export default function DriverDashboard() {
         <select
           value={status}
           onChange={(e) => handleStatusChange(e.target.value)}
-          className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full text-black px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
           <option value="available">Available</option>
           <option value="busy">Busy</option>
